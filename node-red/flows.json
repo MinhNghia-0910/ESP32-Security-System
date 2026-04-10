@@ -1,6 +1,6 @@
 [
     {
-        "id": "ec778bc74331d5e1",
+        "id": "7a7c658c7c044348",
         "type": "tab",
         "label": "hệ thống phát hiện chuyển động và điều khiển thiết bị an ninh",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "edccbc9d9c7219f4",
+        "id": "7d98bac004479afe",
         "type": "mqtt in",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "topic": "security/pir",
         "qos": "0",
@@ -24,15 +24,15 @@
         "y": 140,
         "wires": [
             [
-                "e580cfe83de995ab",
-                "cb9d5247017be62f"
+                "ad2153dae0f20ad3",
+                "090da83ff99627f5"
             ]
         ]
     },
     {
-        "id": "aeee0394394a16a7",
+        "id": "26226e95a643cb79",
         "type": "mqtt out",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "security/cmd",
         "topic": "security/cmd",
         "qos": "0",
@@ -48,9 +48,9 @@
         "wires": []
     },
     {
-        "id": "cb9d5247017be62f",
+        "id": "090da83ff99627f5",
         "type": "function",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "Đếm lượt đi qua",
         "func": "let s = (msg.payload + \"\").trim();\nlet pir = (s === \"1\") ? 1 : 0;\n\nlet last = context.get('lastPir');\nif (last === undefined) last = 0;\n\nlet count = context.get('count');\nif (count === undefined) count = 0;\n\nif (last === 0 && pir === 1) {\n    count += 1;\n}\n\ncontext.set('lastPir', pir);\ncontext.set('count', count);\n\n\nreturn [\n    { payload: count },\n    { topic: \"Count\", payload: count }\n];",
         "outputs": 2,
@@ -63,17 +63,17 @@
         "y": 200,
         "wires": [
             [
-                "cbcffd2549f0e08f"
+                "2d069e115f7c90c7"
             ],
             [
-                "b6cfe9f7c2766e8d"
+                "91b14be78d9ec0ae"
             ]
         ]
     },
     {
-        "id": "e580cfe83de995ab",
+        "id": "ad2153dae0f20ad3",
         "type": "debug",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "debug 1",
         "active": true,
         "tosidebar": true,
@@ -88,9 +88,9 @@
         "wires": []
     },
     {
-        "id": "cbcffd2549f0e08f",
+        "id": "2d069e115f7c90c7",
         "type": "ui_gauge",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "group": "61c7a7440fd594fe",
         "order": 1,
@@ -116,9 +116,9 @@
         "wires": []
     },
     {
-        "id": "b6cfe9f7c2766e8d",
+        "id": "91b14be78d9ec0ae",
         "type": "ui_chart",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "group": "61c7a7440fd594fe",
         "order": 2,
@@ -160,9 +160,9 @@
         ]
     },
     {
-        "id": "6085742672e22619",
+        "id": "2d4fc4a097763785",
         "type": "ui_switch",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "label": "Bật/Tắt hệ thống an ninh",
         "tooltip": "",
@@ -189,14 +189,14 @@
         "y": 300,
         "wires": [
             [
-                "aeee0394394a16a7"
+                "26226e95a643cb79"
             ]
         ]
     },
     {
-        "id": "7d3862e905f6e16d",
+        "id": "5f8bcd95b4bc99a3",
         "type": "e-mail",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "server": "smtp.gmail.com",
         "port": "465",
         "authtype": "BASIC",
@@ -211,9 +211,9 @@
         "wires": []
     },
     {
-        "id": "73273438ca6c33f1",
+        "id": "feed8bbc32148680",
         "type": "function",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "Gửi Email cảnh báo",
         "func": "let event = (msg.payload + \"\").trim().toUpperCase();\nif (event !== \"MOTION\") return null;\n\n// chống spam\nlet lastSent = flow.get(\"lastSent\") || 0;\nlet now = Date.now();\nif (now - lastSent < 60 * 1000) {\n    return null;\n}\nflow.set(\"lastSent\", now);\n\nmsg.topic = \"CẢNH BÁO AN NINH\";\nmsg.payload = \"Cảnh báo: phát hiện chuyển động tại khu vực giám sát vào lúc: \" + new Date().toLocaleString();\n\nreturn msg;",
         "outputs": 1,
@@ -226,14 +226,14 @@
         "y": 460,
         "wires": [
             [
-                "7d3862e905f6e16d"
+                "5f8bcd95b4bc99a3"
             ]
         ]
     },
     {
-        "id": "eb79860d09c61003",
+        "id": "c35809877a6b3d8f",
         "type": "mqtt in",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "topic": "security/event",
         "qos": "0",
@@ -247,14 +247,14 @@
         "y": 460,
         "wires": [
             [
-                "73273438ca6c33f1"
+                "feed8bbc32148680"
             ]
         ]
     },
     {
-        "id": "ef14f797b7f447ab",
+        "id": "f360c1749455d92c",
         "type": "ui_button",
-        "z": "ec778bc74331d5e1",
+        "z": "7a7c658c7c044348",
         "name": "",
         "group": "545ce2dd78a66d41",
         "order": 1,
@@ -275,7 +275,7 @@
         "y": 360,
         "wires": [
             [
-                "aeee0394394a16a7"
+                "26226e95a643cb79"
             ]
         ]
     },
@@ -283,7 +283,7 @@
         "id": "b584eb0096ebad3c",
         "type": "mqtt-broker",
         "name": "MQTT HiveMQ",
-        "broker": "a262aa1fef594c459eebcc81818c75d1.s1.eu.hivemq.cloud:8883",
+        "broker": "*****************.s1.eu.hivemq.cloud:8883",
         "port": "8883",
         "tls": "",
         "clientid": "",
@@ -342,7 +342,7 @@
         "hidden": false
     },
     {
-        "id": "4e5a23f8b2605303",
+        "id": "37b7d21c0eaf42c3",
         "type": "global-config",
         "env": [],
         "modules": {
