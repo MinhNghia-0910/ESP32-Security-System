@@ -1,0 +1,353 @@
+[
+    {
+        "id": "ec778bc74331d5e1",
+        "type": "tab",
+        "label": "hệ thống phát hiện chuyển động và điều khiển thiết bị an ninh",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "edccbc9d9c7219f4",
+        "type": "mqtt in",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "topic": "security/pir",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "b584eb0096ebad3c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "e580cfe83de995ab",
+                "cb9d5247017be62f"
+            ]
+        ]
+    },
+    {
+        "id": "aeee0394394a16a7",
+        "type": "mqtt out",
+        "z": "ec778bc74331d5e1",
+        "name": "security/cmd",
+        "topic": "security/cmd",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "b584eb0096ebad3c",
+        "x": 770,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "cb9d5247017be62f",
+        "type": "function",
+        "z": "ec778bc74331d5e1",
+        "name": "Đếm lượt đi qua",
+        "func": "let s = (msg.payload + \"\").trim();\nlet pir = (s === \"1\") ? 1 : 0;\n\nlet last = context.get('lastPir');\nif (last === undefined) last = 0;\n\nlet count = context.get('count');\nif (count === undefined) count = 0;\n\nif (last === 0 && pir === 1) {\n    count += 1;\n}\n\ncontext.set('lastPir', pir);\ncontext.set('count', count);\n\n\nreturn [\n    { payload: count },\n    { topic: \"Count\", payload: count }\n];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 200,
+        "wires": [
+            [
+                "cbcffd2549f0e08f"
+            ],
+            [
+                "b6cfe9f7c2766e8d"
+            ]
+        ]
+    },
+    {
+        "id": "e580cfe83de995ab",
+        "type": "debug",
+        "z": "ec778bc74331d5e1",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 420,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "cbcffd2549f0e08f",
+        "type": "ui_gauge",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "group": "61c7a7440fd594fe",
+        "order": 1,
+        "width": 6,
+        "height": 6,
+        "gtype": "gage",
+        "title": "Tổng số lượt đi qua",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "500",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 770,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "b6cfe9f7c2766e8d",
+        "type": "ui_chart",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "group": "61c7a7440fd594fe",
+        "order": 2,
+        "width": 6,
+        "height": 6,
+        "label": "Biểu đồ tổng lượt",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 790,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6085742672e22619",
+        "type": "ui_switch",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "label": "Bật/Tắt hệ thống an ninh",
+        "tooltip": "",
+        "group": "545ce2dd78a66d41",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "ON",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "OFF",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 270,
+        "y": 300,
+        "wires": [
+            [
+                "aeee0394394a16a7"
+            ]
+        ]
+    },
+    {
+        "id": "7d3862e905f6e16d",
+        "type": "e-mail",
+        "z": "ec778bc74331d5e1",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "22t1020684@husc.edu.vn",
+        "dname": "email nhận",
+        "x": 750,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "73273438ca6c33f1",
+        "type": "function",
+        "z": "ec778bc74331d5e1",
+        "name": "Gửi Email cảnh báo",
+        "func": "let event = (msg.payload + \"\").trim().toUpperCase();\nif (event !== \"MOTION\") return null;\n\n// chống spam\nlet lastSent = flow.get(\"lastSent\") || 0;\nlet now = Date.now();\nif (now - lastSent < 60 * 1000) {\n    return null;\n}\nflow.set(\"lastSent\", now);\n\nmsg.topic = \"CẢNH BÁO AN NINH\";\nmsg.payload = \"Cảnh báo: phát hiện chuyển động tại khu vực giám sát vào lúc: \" + new Date().toLocaleString();\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "7d3862e905f6e16d"
+            ]
+        ]
+    },
+    {
+        "id": "eb79860d09c61003",
+        "type": "mqtt in",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "topic": "security/event",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "b584eb0096ebad3c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 460,
+        "wires": [
+            [
+                "73273438ca6c33f1"
+            ]
+        ]
+    },
+    {
+        "id": "ef14f797b7f447ab",
+        "type": "ui_button",
+        "z": "ec778bc74331d5e1",
+        "name": "",
+        "group": "545ce2dd78a66d41",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Status",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "STATUS",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "aeee0394394a16a7"
+            ]
+        ]
+    },
+    {
+        "id": "b584eb0096ebad3c",
+        "type": "mqtt-broker",
+        "name": "MQTT HiveMQ",
+        "broker": "a262aa1fef594c459eebcc81818c75d1.s1.eu.hivemq.cloud:8883",
+        "port": "8883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "61c7a7440fd594fe",
+        "type": "ui_group",
+        "name": "Security",
+        "tab": "e8524891caf3effb",
+        "order": 1,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "545ce2dd78a66d41",
+        "type": "ui_group",
+        "name": "",
+        "tab": "e8524891caf3effb",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e8524891caf3effb",
+        "type": "ui_tab",
+        "name": "Giám sát chuyển động và điều khiển thiết bị an ninh",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "4e5a23f8b2605303",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-node-email": "5.2.2"
+        }
+    }
+]
