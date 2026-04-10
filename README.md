@@ -1,7 +1,7 @@
 # ESP32 Security System (MQTT + Node-RED + Telegram)
 
 ## Files
-- Arduino code: `src/esp32_pir_security_mqtt.ino` 
+- Arduino code: `src/esp32_pir_security_system.ino` 
 - Node-RED flow: `node-red/flows.json`
 
 
